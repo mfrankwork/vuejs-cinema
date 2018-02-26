@@ -34,13 +34,13 @@ function generateSessions(id) {
       });
     }
   });
-  return sessions.sort((a, b) => { if (a.time < b.time) { return - 1 } else { return a.time > b.time; } });
+  return sessions.sort((a, b) => { if (a.time < b.time) { return -1 } else { return a.time > b.time; } });
 }
 
 function cleanData(movie) {
   if (movie.Rated === 'N/A' || movie.Rated === 'UNRATED' || movie.Rated === 'NOT RATED') {
     let last = parseInt(movie.imdbID[movie.imdbID.length - 1]);
-    movie.Rated = last < 7 ? ( last < 4 ? 'G' : 'PG-13' ) : 'R';
+    movie.Rated = last < 7 ? (last < 4 ? 'G' : 'PG-13') : 'R';
   }
   return movie;
 }
@@ -53,41 +53,45 @@ module.exports = {
       let data = [];
       async.each(
         ids,
-        function (id, callback) {
+        function(id, callback) {
           if (!data.find(item => item.id === id)) {
+            // $http.get(`?i=${id}`)
             $http.get(`?i=${id}&apikey=${process.env.OMDB_APIKEY}`)
               .then(
-                function (response) {
+                function(response) {
                   if (!response.data.Error) {
                     data.push({
                       id,
                       movie: cleanData(response.data),
                       sessions: generateSessions(id)
                     });
-                  } else {
+                  }
+                  else {
                     console.log(response.data.Error);
                   }
                   callback();
                 },
-                function (err) {
+                function(err) {
                   callback(err);
                 }
-              )
-            ;
-          } else {
+              );
+          }
+          else {
             callback();
           }
         },
         (err) => {
           if (err) {
             callback(err, null);
-          } else {
-            this.data = ids.map(id => data.find(item => id === item.id) );
+          }
+          else {
+            this.data = ids.map(id => data.find(item => id === item.id));
             callback(null, this.data);
           }
         }
       );
-    } else {
+    }
+    else {
       callback(null, this.data);
     }
   }
