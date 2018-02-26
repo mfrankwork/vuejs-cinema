@@ -21,9 +21,6 @@ const router = new VueRouter({ routes });
 import Tooltip from './util/tooltip';
 Vue.use(Tooltip);
 
-console.log('Im thinking of a number between one and 5...');
-console.log('Is it 1?  Is it 2?  Is it 3?  Is it 4?  Is it 5?')
-
 new Vue({
     el: '#app',
     data: {
